@@ -560,7 +560,7 @@
       <div class="rsvp-panel active" id="panel-1">
         <p class="rsvp-q-label">Let's start with your name.</p>
         <input class="rsvp-input" type="text" id="guest-name" placeholder="Your full name" required>
-        <button class="rsvp-next-btn" onclick="nextStep(1)">Continue →</button>
+        <button type="button" class="rsvp-next-btn" onclick="nextStep(1)">Continue →</button>
       </div>
 
       <!-- STEP 2: Party & Attendance -->
@@ -584,7 +584,7 @@
             <span class="rsvp-radio-label"><strong>Unable to attend</strong><small>We'll miss you!</small></span>
           </label>
         </div>
-        <button class="rsvp-next-btn" onclick="nextStep(2)">Continue →</button>
+        <button type="button" class="rsvp-next-btn" onclick="nextStep(2)">Continue →</button>
       </div>
 
       <!-- STEP 3: Party members -->
@@ -595,7 +595,7 @@
           <input class="rsvp-input" type="text" placeholder="Guest name (optional)">
         </div>
         <button type="button" class="rsvp-add-btn" onclick="addPartyMember()">+ Add another guest</button>
-        <button class="rsvp-next-btn" onclick="nextStep(3)">Continue →</button>
+        <button type="button" class="rsvp-next-btn" onclick="nextStep(3)">Continue →</button>
       </div>
 
       <!-- STEP 4: Dietary -->
@@ -603,7 +603,7 @@
         <p class="rsvp-q-label">Any dietary requirements?</p>
         <p class="rsvp-q-sub">Please let us know about any allergies, intolerances, or preferences for anyone in your party.</p>
         <textarea class="rsvp-input rsvp-textarea" id="dietary" placeholder="e.g. Vegetarian, nut allergy, gluten free... or leave blank if none"></textarea>
-        <button class="rsvp-next-btn" onclick="nextStep(4)">Continue →</button>
+        <button type="button" class="rsvp-next-btn" onclick="nextStep(4)">Continue →</button>
       </div>
 
       <!-- STEP 5: Travel / Shuttle -->
@@ -624,7 +624,7 @@
             <span class="rsvp-radio-label"><strong>Not sure yet</strong><small>I'll let you know nearer the time</small></span>
           </label>
         </div>
-        <button class="rsvp-next-btn" onclick="submitRSVP()">Send RSVP ✓</button>
+        <button type="button" class="rsvp-next-btn" onclick="submitRSVP()">Send RSVP ✓</button>
       </div>
 
       <!-- SUCCESS -->
