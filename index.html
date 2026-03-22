@@ -226,6 +226,162 @@
     .parallax-banner { background-attachment: scroll; }
   }
 
+
+  /* ===== RSVP CUSTOM FORM ===== */
+  #rsvp-form-wrap {
+    max-width: 580px;
+    margin: 3rem auto 0;
+    padding: 0 1.5rem 4rem;
+  }
+  .rsvp-steps {
+    display: flex;
+    justify-content: center;
+    gap: 0.6rem;
+    margin-bottom: 2.5rem;
+  }
+  .rsvp-step {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: rgba(247,242,235,0.25);
+    transition: background 0.4s, transform 0.4s;
+  }
+  .rsvp-step.active {
+    background: var(--gold);
+    transform: scale(1.3);
+  }
+  .rsvp-step.done {
+    background: rgba(184,147,90,0.5);
+  }
+  .rsvp-panel {
+    display: none;
+    animation: fadeUp 0.4s ease both;
+  }
+  .rsvp-panel.active {
+    display: block;
+  }
+  .rsvp-q-label {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.8rem;
+    font-weight: 300;
+    color: var(--cream);
+    margin-bottom: 0.5rem;
+    line-height: 1.3;
+  }
+  .rsvp-q-sub {
+    font-size: 0.88rem;
+    color: rgba(247,242,235,0.65);
+    margin-bottom: 1.8rem;
+    font-weight: 300;
+  }
+  .rsvp-input {
+    width: 100%;
+    background: rgba(247,242,235,0.08);
+    border: none;
+    border-bottom: 1px solid rgba(184,147,90,0.5);
+    color: var(--cream);
+    font-family: 'Jost', sans-serif;
+    font-size: 1rem;
+    padding: 0.8rem 0.2rem;
+    margin-bottom: 1.5rem;
+    outline: none;
+    transition: border-color 0.3s;
+    box-sizing: border-box;
+  }
+  .rsvp-input:focus {
+    border-bottom-color: var(--gold);
+  }
+  .rsvp-input::placeholder {
+    color: rgba(247,242,235,0.35);
+  }
+  .rsvp-textarea {
+    resize: vertical;
+    min-height: 100px;
+    border: 1px solid rgba(184,147,90,0.3);
+    padding: 0.8rem;
+    border-radius: 2px;
+  }
+  .rsvp-radio-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+    margin-bottom: 2rem;
+  }
+  .rsvp-radio-card {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem 1.2rem;
+    border: 1px solid rgba(184,147,90,0.25);
+    cursor: pointer;
+    transition: border-color 0.25s, background 0.25s;
+  }
+  .rsvp-radio-card:hover {
+    border-color: var(--gold);
+    background: rgba(184,147,90,0.08);
+  }
+  .rsvp-radio-card input[type="radio"] {
+    accent-color: var(--gold);
+    width: 18px; height: 18px;
+    flex-shrink: 0;
+  }
+  .rsvp-radio-card input[type="radio"]:checked + .rsvp-radio-label {
+    color: var(--gold);
+  }
+  .rsvp-radio-card:has(input:checked) {
+    border-color: var(--gold);
+    background: rgba(184,147,90,0.1);
+  }
+  .rsvp-radio-label {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+    color: var(--cream);
+    font-size: 0.95rem;
+  }
+  .rsvp-radio-label small {
+    font-size: 0.75rem;
+    color: rgba(247,242,235,0.5);
+    font-weight: 300;
+  }
+  .rsvp-next-btn {
+    display: inline-block;
+    margin-top: 1rem;
+    padding: 0.9rem 3rem;
+    border: 1px solid var(--gold);
+    background: transparent;
+    color: var(--gold);
+    font-family: 'Jost', sans-serif;
+    font-size: 0.72rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background 0.3s, color 0.3s;
+  }
+  .rsvp-next-btn:hover {
+    background: var(--gold);
+    color: var(--ink);
+  }
+  .rsvp-add-btn {
+    background: none;
+    border: none;
+    color: rgba(184,147,90,0.7);
+    font-family: 'Jost', sans-serif;
+    font-size: 0.8rem;
+    letter-spacing: 0.1em;
+    cursor: pointer;
+    padding: 0;
+    margin-bottom: 1.5rem;
+    display: block;
+    transition: color 0.2s;
+  }
+  .rsvp-add-btn:hover { color: var(--gold); }
+  .rsvp-success-icon {
+    font-size: 2.5rem;
+    color: var(--gold);
+    margin-bottom: 1rem;
+    animation: pulse 2s ease infinite;
+  }
+
 </style>
 </head>
 <body>
@@ -387,14 +543,81 @@
     <h2 class="section-title" style="max-width:none;">Join us for the<br><em>celebration of a lifetime</em></h2>
     <p class="rsvp-note">Please RSVP by 16th January 2027. We'd love to know about any dietary requirements or accessibility needs.</p>
   </div>
-  <div style="max-width:700px;margin:2.5rem auto 0;padding:0 1.5rem;">
-    <div data-tf-live="01KMBQ4W5JQCEPDW1XT45ZD7FV" style="width:100%;min-height:520px;"></div>
+
+  <div id="rsvp-form-wrap">
+    <!-- STEP INDICATOR -->
+    <div class="rsvp-steps">
+      <div class="rsvp-step active" id="step-dot-1"></div>
+      <div class="rsvp-step" id="step-dot-2"></div>
+      <div class="rsvp-step" id="step-dot-3"></div>
+      <div class="rsvp-step" id="step-dot-4"></div>
+    </div>
+
+    <form id="rsvp-form" autocomplete="off">
+
+      <!-- STEP 1: Name -->
+      <div class="rsvp-panel active" id="panel-1">
+        <p class="rsvp-q-label">Let's start with your name.</p>
+        <input class="rsvp-input" type="text" id="guest-name" placeholder="Your full name" required>
+        <button class="rsvp-next-btn" onclick="nextStep(1)">Continue →</button>
+      </div>
+
+      <!-- STEP 2: Party & Attendance -->
+      <div class="rsvp-panel" id="panel-2">
+        <p class="rsvp-q-label">Will you be joining us?</p>
+        <div class="rsvp-radio-group">
+          <label class="rsvp-radio-card">
+            <input type="radio" name="attendance" value="both"> 
+            <span class="rsvp-radio-label"><strong>Ceremony &amp; Reception</strong><small>Temple of Apollo + Horrell &amp; Horrell</small></span>
+          </label>
+          <label class="rsvp-radio-card">
+            <input type="radio" name="attendance" value="ceremony">
+            <span class="rsvp-radio-label"><strong>Ceremony only</strong><small>Temple of Apollo, 2:00 PM</small></span>
+          </label>
+          <label class="rsvp-radio-card">
+            <input type="radio" name="attendance" value="reception">
+            <span class="rsvp-radio-label"><strong>Reception only</strong><small>Horrell &amp; Horrell, 5:00 PM</small></span>
+          </label>
+          <label class="rsvp-radio-card">
+            <input type="radio" name="attendance" value="decline">
+            <span class="rsvp-radio-label"><strong>Unable to attend</strong><small>We'll miss you!</small></span>
+          </label>
+        </div>
+        <button class="rsvp-next-btn" onclick="nextStep(2)">Continue →</button>
+      </div>
+
+      <!-- STEP 3: Party members -->
+      <div class="rsvp-panel" id="panel-3">
+        <p class="rsvp-q-label">Anyone else in your party?</p>
+        <p class="rsvp-q-sub">Add the names of any guests attending with you.</p>
+        <div id="party-fields">
+          <input class="rsvp-input" type="text" placeholder="Guest name (optional)">
+        </div>
+        <button type="button" class="rsvp-add-btn" onclick="addPartyMember()">+ Add another guest</button>
+        <button class="rsvp-next-btn" onclick="nextStep(3)">Continue →</button>
+      </div>
+
+      <!-- STEP 4: Dietary -->
+      <div class="rsvp-panel" id="panel-4">
+        <p class="rsvp-q-label">Any dietary requirements?</p>
+        <p class="rsvp-q-sub">Please let us know about any allergies, intolerances, or preferences for anyone in your party.</p>
+        <textarea class="rsvp-input rsvp-textarea" id="dietary" placeholder="e.g. Vegetarian, nut allergy, gluten free... or leave blank if none"></textarea>
+        <button class="rsvp-next-btn" onclick="submitRSVP()">Send RSVP ✓</button>
+      </div>
+
+      <!-- SUCCESS -->
+      <div class="rsvp-panel" id="panel-success">
+        <div class="rsvp-success-icon">✦</div>
+        <p class="rsvp-q-label">Thank you!</p>
+        <p class="rsvp-q-sub" id="success-msg">We can't wait to celebrate with you.</p>
+      </div>
+
+    </form>
   </div>
 </section>
 
 <footer>Made with love · <span>Jonny & Hannah</span> · Summer 2027</footer>
 
-<script src="//embed.typeform.com/next/embed.js"></script>
 <script>
   // Always start at top of page
   if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
@@ -410,6 +633,71 @@
     document.getElementById('cd-sec').textContent  = String(Math.floor((diff%6e4)/1e3)).padStart(2,'0');
   }
   updateCountdown(); setInterval(updateCountdown, 1000);
+
+  // ===== RSVP FORM =====
+  const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzh4hFjqRDdPW8x4gtNOpdjUQbMVDgTuduSxJnS8ITuKm2YDWyLcukE_BnE8-dRJP6F6A/exec';
+
+  function nextStep(current) {
+    // Validate
+    if (current === 1) {
+      const name = document.getElementById('guest-name').value.trim();
+      if (!name) { document.getElementById('guest-name').focus(); return; }
+    }
+    if (current === 2) {
+      const att = document.querySelector('input[name="attendance"]:checked');
+      if (!att) { return; }
+      // If declining, skip to success
+      if (att.value === 'decline') {
+        showPanel(5);
+        document.getElementById('success-msg').textContent = "We'll raise a glass to you from afar.";
+        submitToSheet();
+        return;
+      }
+    }
+    showPanel(current + 1);
+  }
+
+  function showPanel(n) {
+    document.querySelectorAll('.rsvp-panel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.rsvp-step').forEach((d, i) => {
+      d.classList.remove('active', 'done');
+      if (i + 1 < n) d.classList.add('done');
+      if (i + 1 === n) d.classList.add('active');
+    });
+    const panel = document.getElementById(n === 5 ? 'panel-success' : 'panel-' + n);
+    if (panel) panel.classList.add('active');
+  }
+
+  function addPartyMember() {
+    const fields = document.getElementById('party-fields');
+    if (fields.children.length >= 6) return;
+    const input = document.createElement('input');
+    input.className = 'rsvp-input';
+    input.type = 'text';
+    input.placeholder = 'Guest name (optional)';
+    fields.appendChild(input);
+  }
+
+  function submitRSVP() {
+    showPanel(5);
+    submitToSheet();
+  }
+
+  function submitToSheet() {
+    if (SCRIPT_URL === 'YOUR_GOOGLE_SCRIPT_URL_HERE') return;
+    const name = document.getElementById('guest-name').value.trim();
+    const attendance = (document.querySelector('input[name="attendance"]:checked') || {}).value || 'decline';
+    const partyInputs = document.querySelectorAll('#party-fields input');
+    const party = Array.from(partyInputs).map(i => i.value.trim()).filter(Boolean).join(', ');
+    const dietary = (document.getElementById('dietary') || {}).value || '';
+
+    fetch(SCRIPT_URL, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name, attendance, party, dietary, submitted: new Date().toISOString() })
+    });
+  }
 
   const obs = new IntersectionObserver(entries => entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('visible'); }), { threshold: 0.1 });
   document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
