@@ -551,6 +551,7 @@
       <div class="rsvp-step" id="step-dot-2"></div>
       <div class="rsvp-step" id="step-dot-3"></div>
       <div class="rsvp-step" id="step-dot-4"></div>
+      <div class="rsvp-step" id="step-dot-5"></div>
     </div>
 
     <form id="rsvp-form" autocomplete="off">
@@ -602,6 +603,27 @@
         <p class="rsvp-q-label">Any dietary requirements?</p>
         <p class="rsvp-q-sub">Please let us know about any allergies, intolerances, or preferences for anyone in your party.</p>
         <textarea class="rsvp-input rsvp-textarea" id="dietary" placeholder="e.g. Vegetarian, nut allergy, gluten free... or leave blank if none"></textarea>
+        <button class="rsvp-next-btn" onclick="nextStep(4)">Continue →</button>
+      </div>
+
+      <!-- STEP 5: Travel / Shuttle -->
+      <div class="rsvp-panel" id="panel-5">
+        <p class="rsvp-q-label">Getting to the Temple.</p>
+        <p class="rsvp-q-sub">A shuttle will run from the Stourhead visitor car park to the Temple of Apollo before the ceremony, and back afterwards. Would you like to use it?</p>
+        <div class="rsvp-radio-group">
+          <label class="rsvp-radio-card">
+            <input type="radio" name="shuttle" value="yes">
+            <span class="rsvp-radio-label"><strong>Yes please</strong><small>I'd like to take the shuttle from the car park</small></span>
+          </label>
+          <label class="rsvp-radio-card">
+            <input type="radio" name="shuttle" value="no">
+            <span class="rsvp-radio-label"><strong>No thanks</strong><small>I'll make my own way to the Temple</small></span>
+          </label>
+          <label class="rsvp-radio-card">
+            <input type="radio" name="shuttle" value="unsure">
+            <span class="rsvp-radio-label"><strong>Not sure yet</strong><small>I'll let you know nearer the time</small></span>
+          </label>
+        </div>
         <button class="rsvp-next-btn" onclick="submitRSVP()">Send RSVP ✓</button>
       </div>
 
@@ -645,7 +667,8 @@
       name: (document.getElementById('guest-name') || {}).value || '',
       attendance: (document.querySelector('input[name="attendance"]:checked') || {}).value || '',
       party: Array.from(document.querySelectorAll('#party-fields input')).map(i => i.value),
-      dietary: (document.getElementById('dietary') || {}).value || ''
+      dietary: (document.getElementById('dietary') || {}).value || '',
+      shuttle: (document.querySelector('input[name="shuttle"]:checked') || {value:''}).value
     };
     try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch(e) {}
   }
@@ -689,11 +712,18 @@
     // Restore dietary
     if (state.dietary) document.getElementById('dietary').value = state.dietary;
 
+    // Restore shuttle
+    if (state.shuttle) {
+      const sr = document.querySelector('input[name="shuttle"][value="' + state.shuttle + '"]');
+      if (sr) sr.checked = true;
+    }
+
     // Restore step
     if (state.step > 1) showPanel(state.step);
   }
 
   function nextStep(current) {
+    if (current === 4) { saveState(5); showPanel(5); return; }
     if (current === 1) {
       const name = document.getElementById('guest-name').value.trim();
       if (!name) { document.getElementById('guest-name').focus(); return; }
@@ -702,8 +732,8 @@
       const att = document.querySelector('input[name="attendance"]:checked');
       if (!att) return;
       if (att.value === 'decline') {
-        saveState(5);
-        showPanel(5);
+        saveState(6);
+        showPanel(6);
         document.getElementById('success-msg').textContent = "We'll raise a glass to you from afar.";
         submitToSheet();
         return;
@@ -720,7 +750,7 @@
       if (i + 1 < n) d.classList.add('done');
       if (i + 1 === n) d.classList.add('active');
     });
-    const panel = document.getElementById(n === 5 ? 'panel-success' : 'panel-' + n);
+    const panel = document.getElementById(n === 6 ? 'panel-success' : 'panel-' + n);
     if (panel) panel.classList.add('active');
   }
 
@@ -735,8 +765,8 @@
   }
 
   function submitRSVP() {
-    saveState(5);
-    showPanel(5);
+    saveState(6);
+    showPanel(6);
     submitToSheet();
     try { localStorage.removeItem(STORAGE_KEY); } catch(e) {}
   }
@@ -747,12 +777,13 @@
     const partyInputs = document.querySelectorAll('#party-fields input');
     const party = Array.from(partyInputs).map(i => i.value.trim()).filter(Boolean).join(', ');
     const dietary = (document.getElementById('dietary') || {}).value || '';
+    const shuttle = (document.querySelector('input[name="shuttle"]:checked') || {}).value || '';
 
     fetch(SCRIPT_URL, {
       method: 'POST',
       mode: 'no-cors',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name, attendance, party, dietary, submitted: new Date().toISOString() })
+      body: JSON.stringify({ name, attendance, party, dietary, shuttle, submitted: new Date().toISOString() })
     });
   }
 
