@@ -636,24 +636,80 @@
 
   // ===== RSVP FORM =====
   const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzh4hFjqRDdPW8x4gtNOpdjUQbMVDgTuduSxJnS8ITuKm2YDWyLcukE_BnE8-dRJP6F6A/exec';
+  const STORAGE_KEY = 'rsvp_state';
+
+  // Save current form state to localStorage
+  function saveState(step) {
+    const state = {
+      step: step,
+      name: (document.getElementById('guest-name') || {}).value || '',
+      attendance: (document.querySelector('input[name="attendance"]:checked') || {}).value || '',
+      party: Array.from(document.querySelectorAll('#party-fields input')).map(i => i.value),
+      dietary: (document.getElementById('dietary') || {}).value || ''
+    };
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch(e) {}
+  }
+
+  // Restore state from localStorage on page load
+  function restoreState() {
+    let state;
+    try { state = JSON.parse(localStorage.getItem(STORAGE_KEY)); } catch(e) {}
+    if (!state || state.step === 5) return;
+
+    // Restore name
+    if (state.name) document.getElementById('guest-name').value = state.name;
+
+    // Restore attendance
+    if (state.attendance) {
+      const radio = document.querySelector('input[name="attendance"][value="' + state.attendance + '"]');
+      if (radio) radio.checked = true;
+    }
+
+    // Restore party members
+    if (state.party && state.party.length) {
+      const fields = document.getElementById('party-fields');
+      fields.innerHTML = '';
+      state.party.forEach((name, i) => {
+        const input = document.createElement('input');
+        input.className = 'rsvp-input';
+        input.type = 'text';
+        input.placeholder = 'Guest name (optional)';
+        input.value = name;
+        fields.appendChild(input);
+      });
+      if (fields.children.length === 0) {
+        const input = document.createElement('input');
+        input.className = 'rsvp-input';
+        input.type = 'text';
+        input.placeholder = 'Guest name (optional)';
+        fields.appendChild(input);
+      }
+    }
+
+    // Restore dietary
+    if (state.dietary) document.getElementById('dietary').value = state.dietary;
+
+    // Restore step
+    if (state.step > 1) showPanel(state.step);
+  }
 
   function nextStep(current) {
-    // Validate
     if (current === 1) {
       const name = document.getElementById('guest-name').value.trim();
       if (!name) { document.getElementById('guest-name').focus(); return; }
     }
     if (current === 2) {
       const att = document.querySelector('input[name="attendance"]:checked');
-      if (!att) { return; }
-      // If declining, skip to success
+      if (!att) return;
       if (att.value === 'decline') {
+        saveState(5);
         showPanel(5);
         document.getElementById('success-msg').textContent = "We'll raise a glass to you from afar.";
         submitToSheet();
         return;
       }
     }
+    saveState(current + 1);
     showPanel(current + 1);
   }
 
@@ -679,12 +735,13 @@
   }
 
   function submitRSVP() {
+    saveState(5);
     showPanel(5);
     submitToSheet();
+    try { localStorage.removeItem(STORAGE_KEY); } catch(e) {}
   }
 
   function submitToSheet() {
-    if (SCRIPT_URL === 'YOUR_GOOGLE_SCRIPT_URL_HERE') return;
     const name = document.getElementById('guest-name').value.trim();
     const attendance = (document.querySelector('input[name="attendance"]:checked') || {}).value || 'decline';
     const partyInputs = document.querySelectorAll('#party-fields input');
@@ -698,6 +755,9 @@
       body: JSON.stringify({ name, attendance, party, dietary, submitted: new Date().toISOString() })
     });
   }
+
+  // Restore on load
+  window.addEventListener('DOMContentLoaded', restoreState);
 
   const obs = new IntersectionObserver(entries => entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('visible'); }), { threshold: 0.1 });
   document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
